@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AirCompanyTest
 {
     [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     class Plane 
     {
         protected string aircraftID;
@@ -32,7 +34,7 @@ namespace AirCompanyTest
 
         }
         //methods
-        public override string ToString()
+        public virtual string GetPlaneInfo()
         {
             return
                 "\nAircraft Type: " + aircraftType +

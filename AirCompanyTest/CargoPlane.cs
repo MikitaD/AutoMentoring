@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AirCompanyTest
 {
     [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     class CargoPlane:Plane
     {
         protected double cargoMaxLengthMeters;
@@ -22,9 +24,9 @@ namespace AirCompanyTest
             cargoMaxHeightMeters = pCargoMaxHeightMeters;
             standardContainersToCarryCount = pStandardContainersToCarryCount;
         }
-        public override string ToString()
+        public override string GetPlaneInfo()
         {
-            return base.ToString() + "\nCargo Max Length Meters: " + cargoMaxLengthMeters +
+            return base.GetPlaneInfo() + "\nCargo Max Length Meters: " + cargoMaxLengthMeters +
                 "\nCargo Max Width Meters: " + cargoMaxWidthMeters +
                 "\nCargo Max Height Meters: " + cargoMaxHeightMeters +
                 "\nStandard Containers To Carry: " + standardContainersToCarryCount;

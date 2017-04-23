@@ -12,41 +12,40 @@ namespace AirCompanyTest
         static void Main(string[] args)
         {
             //directory of files to import/export
-            string path = @"c:\AirCompanyFolder";
-            if (Directory.Exists(path) == false)
+            string folder = @"c:\AirCompanyFolder";
+            if (Directory.Exists(folder) == false)
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(folder);
             }
             //import file name
             string fileName = "plh14zho.ini.txt";
-            path = System.IO.Path.Combine(path, fileName);
-            //List<Plane> planes = new List<Plane>();
-            // planes.Add(Plane1);
-            // planes.Add(Plane2);
-            // planes.Add(Plane3);
-            //planes.Add(Plane4); 
+            string datFileName = "BinaryFileAirCompany.dat";
+            string jsonFileName = "ExportPlaneDataJSON_20170423173942468";
+            string path = System.IO.Path.Combine(folder, fileName);
+            Console.WriteLine(path);
+            //company import from text file
             FileReader Reader = new FileReader();
             List<Plane> planes = Reader.ReadFile(path);
             AirCompany Company1 = new AirCompany("United Airlines", "US", planes);
-           // Company1.AddPlane(Plane1);
-          //  Company1.AddPlane(Plane2);
-          //  Company1.AddPlane(Plane3);
-          //  Company1.AddPlane(Plane4);
             Console.WriteLine(Company1.GetBasicCompanyInfo());
             //  Console.WriteLine(Company1.GetSummaryPayload());
             //  Console.WriteLine(Company1.GetSummarySeats());
             //  Console.WriteLine(Company1.GetPlanesSortedByMaxRange());
-
-            Console.WriteLine(path);
-            //File.WriteAllText(path, Company1.GetBasicCompanyInfo());
-            fileName = "3.dat";
-            path = @"c:\AirCompanyFolder";
-            path = System.IO.Path.Combine(path, fileName);
-            Company1.Serialize(path);
+            Company1.ExporPlanesDataToFile(folder);
+            //company import from bin file
+            fileName = datFileName;
+            path = System.IO.Path.Combine(folder, fileName);
             planes = Reader.ReadBinaryFileDeserialize(path);
             AirCompany Company2 = new AirCompany("PanAmerican Airlines", "US", planes);
             Console.WriteLine(Company2.GetBasicCompanyInfo());
-            Console.WriteLine(Company2.GetPlanesSortedByMaxRange()); 
+            Company2.Serialize(folder);
+            Company2.SerializeToJSON(folder);
+            fileName = jsonFileName;
+            path = System.IO.Path.Combine(folder, fileName);
+            planes = Reader.ReadJsonFileDeserialize(path);
+            AirCompany Company3 = new AirCompany("Lufthansa", "GE", planes);
+            Console.WriteLine(Company3.GetBasicCompanyInfo());
+            Console.WriteLine(Company3.GetPlanesSortedByMaxRange());
             Console.Read();
         }
     }

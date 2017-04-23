@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AirCompanyTest
 {
     [Serializable]
+    [JsonObject(MemberSerialization.Fields)]
     class PassengerPlane : Plane 
     {
         protected int firstClassSeatsCount;
@@ -26,9 +28,9 @@ namespace AirCompanyTest
             secondClassSeatsCount = pSecondClassSeatsCount;
             stewardCrewCount = pStewardCrewCount;
         }
-        public override string ToString()
+        public override string GetPlaneInfo()
         {
-                return base.ToString() + "\nFirst Class Seats Count: " + firstClassSeatsCount +
+                return base.GetPlaneInfo() + "\nFirst Class Seats Count: " + firstClassSeatsCount +
                     "\nSecond Class Seats Count: " + secondClassSeatsCount +
                     "\nSteward Crew Count: " + stewardCrewCount;
         }

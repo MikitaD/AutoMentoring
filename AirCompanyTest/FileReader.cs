@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace AirCompanyTest
 {
@@ -59,11 +60,11 @@ namespace AirCompanyTest
                 // assign the reference to the local variable.
                 //airCompanyImport.Add((Plane) 
                 airCompanyImport =(List<Plane>) formatter.Deserialize(fs);
-                Console.WriteLine("Serialization ok");
+                Console.WriteLine("Binary Deserialization completed");
                 }
                 catch (SerializationException e)
                 {
-                    Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+                    Console.WriteLine("Failed to deserialize binary. Reason: " + e.Message);
                     throw;
                 }
                 finally
@@ -71,13 +72,38 @@ namespace AirCompanyTest
                     fs.Close();
                 }
 
-            // To prove that the table deserialized correctly, 
-            // display the key/value pairs.
-            Console.WriteLine("abc");
-
             return airCompanyImport;
         }
-            
+        public List<Plane> ReadJsonFileDeserialize(string path)
+        {
+            List<Plane> airCompanyImport = new List<Plane>();
+            // Open the file containing the data that you want to deserialize.
+            StreamReader fs = new StreamReader(path);
+            // Construct a BinaryFormatter and use it to serialize the data to the stream.
+            try
+            {
+                string jsonString = fs.ReadLine();
+                JsonSerializerSettings settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.All};
+                airCompanyImport = JsonConvert.DeserializeObject <List<Plane>>(jsonString, settings);
+                Console.WriteLine(jsonString);
+                // Deserialize the hashtable from the file and 
+                // assign the reference to the local variable.
+                //airCompanyImport.Add((Plane) 
+               // airCompanyImport = (List<Plane>)formatter.Deserialize(fs);
+                Console.WriteLine("JSON Deserialization completed");
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to deserialize JSON. Reason: " + e.Message);
+                throw;
+            }
+            finally
+            {
+                fs.Close();
+            }
+            return airCompanyImport;
+        }
+
     }
 
  }

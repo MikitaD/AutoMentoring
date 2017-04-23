@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace AirCompanyTest
 {
@@ -95,7 +97,7 @@ namespace AirCompanyTest
             planes.Sort((x, y) => x.GetMaxRangeKm().CompareTo(y.GetMaxRangeKm()));
             foreach (Plane plane in planes)
             {
-                Console.WriteLine(plane.ToString());
+                Console.WriteLine(plane.GetPlaneInfo());
             }
             return null;
         }
@@ -107,51 +109,29 @@ namespace AirCompanyTest
                               select Plane;
             foreach (Plane plane in planes)
             {
-                Console.WriteLine(plane.ToString());
+                Console.WriteLine(plane.GetPlaneInfo());
             }
             return null;
         }
-
-        public void ExportAircompanyDataToFile(string path)
+        public void ExporPlanesDataToFile(string folder)
         {
+            string fileName = "ExportPlaneDataText_" + DateTime.Now.ToString("yyyyMMddHHmmssfff")+".txt";
+            string path = System.IO.Path.Combine(folder, fileName);
             System.IO.StreamWriter file = new System.IO.StreamWriter(path);
-            foreach (Plane plane in planes)
-            {
-                file.WriteLine(plane.ToString());
-            }
-            file.Close();
-        }
-
-        public void ExporPlanesDataToFile(string path)
-        {            
-        System.IO.StreamWriter file = new System.IO.StreamWriter(path);
             foreach (Plane plane in planes)
             {
                 file.WriteLine(plane.Export());
             }
             file.Close();
         }
-        //public void ExporPlanesDataToBinaryFile(string path)
-        //{
-        //    BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.Create));
-        //        foreach (Plane plane in planes)
-        //    {
-        //            writer.Write(plane.Export());
-        //    }
-        //    writer.Close();
-        //}
-        public void Serialize(string path)
+        public void Serialize(string folder)
         {
-            // In this case, use a file stream.
+            string fileName = "ExportPlaneDataBinary_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string path = System.IO.Path.Combine(folder, fileName);
             FileStream fs = new FileStream(path, FileMode.Create);
-            // Construct a BinaryFormatter and use it to serialize the data to the stream.
             BinaryFormatter formatter = new BinaryFormatter();
             try
             {
-                //foreach (Plane plane in planes)
-                //{
-                //    formatter.Serialize(fs, plane);
-                //}
                 formatter.Serialize(fs, planes);
             }
             catch (SerializationException e)
@@ -162,6 +142,28 @@ namespace AirCompanyTest
             finally
             {
                 fs.Close();
+            }
+        }
+        public void SerializeToJSON(string folder)
+        {
+            string fileName = "ExportPlaneDataJSON_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string path = System.IO.Path.Combine(folder, fileName);
+            TextWriter writer = new StreamWriter(path);
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            try
+            {
+                    string jsonString = JsonConvert.SerializeObject(planes,settings);
+                    writer.Write(jsonString);
+
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+                throw;
+            }
+            finally
+            {
+                writer.Close();
             }
         }
     }
