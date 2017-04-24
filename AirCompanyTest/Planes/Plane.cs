@@ -24,7 +24,7 @@ namespace AirCompanyTest
         }
         public Plane(string pAircraftType, string pAircraftID, string pAircraftModel, int pMaxRangeKm,int pPayLoadKg, int pCrewCount)
         {
-            Console.WriteLine("Basic parent constructor used");
+            //Console.WriteLine("Basic parent constructor used");
             aircraftType = pAircraftType;
             aircraftID = pAircraftID;
             aircraftModel = pAircraftModel;

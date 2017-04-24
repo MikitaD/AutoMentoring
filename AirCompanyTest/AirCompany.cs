@@ -102,12 +102,12 @@ namespace AirCompanyTest
             return null;
         }
 
-        public string GetPlanesFiltered()
+        public string GetPlanesFiltered(int range)
         {
             var queryPlanes = from Plane in planes
-                              where Plane.GetMaxRangeKm() > 9000
+                              where Plane.GetMaxRangeKm() > range
                               select Plane;
-            foreach (Plane plane in planes)
+            foreach (Plane plane in queryPlanes)
             {
                 Console.WriteLine(plane.GetPlaneInfo());
             }
