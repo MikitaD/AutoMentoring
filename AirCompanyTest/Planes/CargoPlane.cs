@@ -35,6 +35,11 @@ namespace AirCompanyTest
         {
             return base.Export() + "," + cargoMaxLengthMeters + "," + cargoMaxWidthMeters + "," + cargoMaxHeightMeters+","+ standardContainersToCarryCount;
         }
+        public override int CountSeats()
+        {
+            int totalSeats = crewCount;
+            return totalSeats;
+        }
     }
 
 }

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataSourcesInteraction\DBInteraction.cs" />
+    <Compile Include="Exceptions\MenyEntryOutOfRangeException.cs" />
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Planes\CargoPlane.cs" />
     <Compile Include="DataSourcesInteraction\FileReader.cs" />

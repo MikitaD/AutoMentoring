@@ -9,7 +9,7 @@ namespace AirCompanyTest
 {
     [Serializable]
     [JsonObject(MemberSerialization.Fields)]
-    class Plane 
+    abstract class Plane 
     {
         protected string aircraftID;
         protected string aircraftModel;
@@ -48,10 +48,8 @@ namespace AirCompanyTest
         {
             return aircraftType + "," + aircraftID+ "," + aircraftModel + "," + maxRangeKm + "," + payLoadKG + "," + crewCount;
         }
-        public virtual int CountSeats()
-        {
-            return crewCount;
-        }
+        public abstract int CountSeats();
+
         public string GetID ()
         {
             return aircraftID;
