@@ -94,7 +94,7 @@ namespace AirCompanyTest
 
         public string GetPlanesSortedByMaxRange()
         {
-            planes.Sort((x, y) => x.GetMaxRangeKm().CompareTo(y.GetMaxRangeKm()));
+            planes.Sort((x, y) => -1 * x.GetMaxRangeKm().CompareTo(y.GetMaxRangeKm()));
             foreach (Plane plane in planes)
             {
                 Console.WriteLine(plane.GetPlaneInfo());
@@ -102,16 +102,18 @@ namespace AirCompanyTest
             return null;
         }
 
-        public string GetPlanesFiltered(int range)
+        public string GetPlanesFiltered(int minRange, int maxRange)
         {
+            string resultString = null;
             var queryPlanes = from Plane in planes
-                              where Plane.GetMaxRangeKm() > range
+                              where Plane.GetMaxRangeKm() >= minRange
+                              && Plane.GetMaxRangeKm() <= maxRange
                               select Plane;
             foreach (Plane plane in queryPlanes)
             {
-                Console.WriteLine(plane.GetPlaneInfo());
+                resultString += "\n"+ plane.GetPlaneInfo();
             }
-            return null;
+            return resultString;
         }
         public void ExporPlanesDataToFile(string folder)
         {
@@ -122,6 +124,7 @@ namespace AirCompanyTest
             {
                 file.WriteLine(plane.Export());
             }
+            Console.WriteLine("File was successfully exported to" + path);
             file.Close();
         }
         public void Serialize(string folder)
@@ -133,6 +136,7 @@ namespace AirCompanyTest
             try
             {
                 formatter.Serialize(fs, planes);
+                Console.WriteLine("Binary file was successfully exported to" + path);
             }
             catch (SerializationException e)
             {
@@ -153,7 +157,8 @@ namespace AirCompanyTest
             try
             {
                     string jsonString = JsonConvert.SerializeObject(planes,settings);
-                    writer.Write(jsonString);
+                    Console.WriteLine("Binary file was successfully exported to" + path);
+                //writer.Write(jsonString);
 
             }
             catch (SerializationException e)

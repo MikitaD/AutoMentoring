@@ -27,6 +27,7 @@ namespace AirCompanyTest
             string path = System.IO.Path.Combine(folder, fileName);
             MainMenu menu = new MainMenu();
             FileReader Reader = new FileReader();
+            List<Plane> planes = null;
             //company import from files options
             menu.ShowStartupMenuOptions();
             int choice = Convert.ToInt32(Console.ReadLine());
@@ -35,38 +36,7 @@ namespace AirCompanyTest
                 case 1:
                     {
                         //company import from text file
-                        List<Plane> planes = Reader.ReadFile(path);
-                        AirCompany Company1 = new AirCompany("United Airlines", "US", planes);
-                        menu.ShowCompanyCreatedMessage();
-                        Console.WriteLine(Company1.GetBasicCompanyInfo());
-                        menu.ShowAirCompanyBasicOptions();
-                        choice = Convert.ToInt32(Console.ReadLine());
-                        switch (choice)
-                        {
-                            case 1:
-                                {
-                                    Console.WriteLine(Company1.GetSummaryPayload());
-                                }
-                                break;
-                            case 2:
-                                {
-                                    Console.WriteLine(Company1.GetSummarySeats());
-                                }
-                                break;
-                            case 3:
-                                {
-                                    Console.WriteLine(Company1.GetPlanesSortedByMaxRange());
-                                }
-                                break;
-                            case 4:
-                                {
-                                    menu.ShowFilterMenu();
-                                    int range = Convert.ToInt32(Console.ReadLine());
-                                    Console.WriteLine(Company1.GetPlanesFiltered(range));
-                                }
-                                break;
-                        }
-                        Company1.ExporPlanesDataToFile(folder);
+                        planes = Reader.ReadFile(path);
                     }
                     break;
                 case 2:
@@ -74,39 +44,7 @@ namespace AirCompanyTest
                         //company import from bin file
                         fileName = datFileName;
                         path = System.IO.Path.Combine(folder, fileName);
-                        List<Plane> planes = Reader.ReadBinaryFileDeserialize(path);
-                        AirCompany Company1 = new AirCompany("PanAmerican Airlines", "US", planes);
-                        Console.WriteLine(Company1.GetBasicCompanyInfo());
-                        menu.ShowAirCompanyBasicOptions();
-                        choice = Convert.ToInt32(Console.ReadLine());
-                        switch (choice)
-                        {
-                            case 1:
-                                {
-                                    Console.WriteLine(Company1.GetSummaryPayload());
-                                }
-                                break;
-                            case 2:
-                                {
-                                    Console.WriteLine(Company1.GetSummarySeats());
-                                }
-                                break;
-                            case 3:
-                                {
-                                    Console.WriteLine(Company1.GetPlanesSortedByMaxRange());
-                                }
-                                break;
-                            case 4:
-                                {
-                                    menu.ShowFilterMenu();
-                                    int range = Convert.ToInt32(Console.ReadLine());
-                                    Console.WriteLine(Company1.GetPlanesFiltered(range));
-                                }
-                                break;
-                        }
-                        Company1.ExporPlanesDataToFile(folder);
-                        Company1.Serialize(folder);
-
+                        planes = Reader.ReadBinaryFileDeserialize(path);
                     }
                     break;
                 case 3:
@@ -114,28 +52,119 @@ namespace AirCompanyTest
                         //company import from json file
                         fileName = jsonFileName;
                         path = System.IO.Path.Combine(folder, fileName);
-                        List<Plane> planes = Reader.ReadJsonFileDeserialize(path);
-                        AirCompany Company1 = new AirCompany("Lufthansa", "GE", planes);
-                        Console.WriteLine(Company1.GetBasicCompanyInfo());
-                        Console.WriteLine(Company1.GetPlanesSortedByMaxRange());
-                        Company1.SerializeToJSON(folder);
+                        planes = Reader.ReadJsonFileDeserialize(path);
                     }
                     break;
             }
+            AirCompany Company1 = new AirCompany("United Airlines", "US", planes);
+            menu.ShowCompanyCreatedMessage();
+            Console.WriteLine(Company1.GetBasicCompanyInfo());
+            bool repeat = false;
+            do {
+            Console.Clear(); 
+            menu.ShowAirCompanyBasicOptions();
             choice = Convert.ToInt32(Console.ReadLine());
-            //database part
-            DBInteraction DataBase = new DBInteraction();
-            var dbConn = DataBase.Connect();
-            DataBase.SelectTopProducts(dbConn);
-            int id = 5;
-            string custID = "FURIB";
-            DataBase.InsertIntoRegions(dbConn,id);
-            DataBase.SelectRegions(dbConn);
-            DataBase.UpdateRegionByID(dbConn,id);
-            DataBase.SelectRegions(dbConn);
-            DataBase.DeleteRegionByID(dbConn,id);
-            DataBase.SelectRegions(dbConn);
-            DataBase.SelectCustomerOrdersUsingStoredProcedure(dbConn, custID);
+            Console.Clear();
+            switch (choice)
+            {
+                case 1:
+                    {
+                        Console.WriteLine(Company1.GetSummaryPayload());
+                        menu.ShowIfContinueChoise();
+                        ConsoleKeyInfo keyPressed;
+                        keyPressed = Console.ReadKey();
+                        if (keyPressed.Key == ConsoleKey.D1 || keyPressed.Key == ConsoleKey.NumPad1)
+                        {
+                            repeat = true;
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            repeat = false;  
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        Console.WriteLine(Company1.GetSummarySeats());
+                    }
+                    break;
+                case 3:
+                    {
+                        Console.WriteLine(Company1.GetPlanesSortedByMaxRange());
+                    }
+                    break;
+                case 4:
+                    {
+                        menu.ShowFilterMenu();
+                        int rangeMin = Convert.ToInt32(Console.ReadLine());
+                        menu.ShowFilterMenu();
+                        int rangeMax = Convert.ToInt32(Console.ReadLine());
+                        string result = Company1.GetPlanesFiltered(rangeMin, rangeMax);
+                        if (result != null)
+                        {
+                            Console.WriteLine("Following planes matched:");
+                            Console.WriteLine(result);
+                        }
+                        else Console.WriteLine("No Planes was found");
+                    }
+                    break;
+                case 5:
+                    {
+                        Company1.ExporPlanesDataToFile(folder);
+                    }
+                    break;
+                case 6:
+                    {
+                        Company1.Serialize(folder);
+                    }
+                    break;
+                case 7:
+                    {
+                        Company1.SerializeToJSON(folder);
+                    }
+                    break;
+                case 8:
+                    {
+                        DBInteraction DataBase = new DBInteraction();
+                        var dbConn = DataBase.Connect();
+                        int id = 5;
+                        string custID = "FURIB";
+                        menu.ShowDBOptions();
+                        choice = Convert.ToInt32(Console.ReadLine());
+                            switch (choice)
+                            {
+                                case 1:
+                                    {
+                                        DataBase.SelectTopProducts(dbConn);
+                                    }
+                                    break;
+                                case 2:
+                                    {
+                                        DataBase.InsertIntoRegions(dbConn, id);
+                                        DataBase.SelectRegions(dbConn);
+                                        DataBase.UpdateRegionByID(dbConn, id);
+                                        DataBase.SelectRegions(dbConn);
+                                        DataBase.DeleteRegionByID(dbConn, id);
+                                        DataBase.SelectRegions(dbConn);
+                                    }
+                                    break;
+                                case 3:
+                                    {
+                                        DataBase.SelectCustomerOrdersUsingStoredProcedure(dbConn, custID);
+                                    }
+                                    break;
+                            }
+                    }
+                   break;
+                 case 9:
+                        {
+                            repeat = false;
+                        }
+                       break;
+                }
+            } 
+            while (repeat == true);
             Console.Read();
         }
     }

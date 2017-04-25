@@ -1,0 +1,4 @@
+Cargo,N-1234,Boeing 747 Dreamlifter,9000,150000,2,1602,12,12,58
+Cargo,N-1235,Boeing 727 Cargo,6000,40000,3,6,5,5,12
+Passenger,N-1134,Boeing 747-400,9150,100000,2,80,450,12
+Passenger,N-1135,Boeing 737-300,700,50000,4,12,150,4
